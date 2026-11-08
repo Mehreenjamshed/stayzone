@@ -118,3 +118,11 @@ export async function getDestinationCounts() {
   }
   return m;
 }
+
+export async function getIntSetting(key: string, fallback: number) {
+  if (!isConfigured()) return fallback;
+  const supabase = await createClient();
+  const { data } = await supabase.from("platform_settings").select("value").eq("key", key).maybeSingle();
+  const n = Number(data?.value);
+  return Number.isFinite(n) ? n : fallback;
+}

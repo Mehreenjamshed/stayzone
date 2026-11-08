@@ -10,7 +10,7 @@ export function ProsePage({ title, intro, draft, children }: { title: string; in
           Draft for review. This text must be checked by a qualified Pakistani lawyer before launch.
         </p>
       )}
-      <div className="mt-10 space-y-5 text-[17px] leading-relaxed [&_h2]:mt-10 [&_h2]:text-2xl [&_h2]:font-semibold [&_li]:ms-5 [&_li]:list-disc [&_ul]:space-y-2 [&_a]:text-forest [&_a]:underline">
+      <div className="mt-10 space-y-5 text-[17px] leading-relaxed [&_h2]:mt-10 [&_h2]:text-2xl [&_h2]:font-semibold [&_li]:ms-5 [&_li]:list-disc [&_ul]:space-y-2 [&_p_a]:text-forest [&_p_a]:underline [&_li_a]:text-forest [&_li_a]:underline">
         {children}
       </div>
     </article>

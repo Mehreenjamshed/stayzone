@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ELEVATION_M } from "@/config/geo";
 import type { Location } from "@/types/db";
+import { Reveal } from "@/components/motion/reveal";
 
 /**
  * Destinations ordered north → south (by latitude). The bar under each card is
@@ -13,8 +14,8 @@ export function DestinationTrail({ locations, counts, locale, staysLabel }: {
   const ordered = [...locations].sort((a, b) => Number(b.latitude) - Number(a.latitude));
   const maxElev = Math.max(...ordered.map((l) => ELEVATION_M[l.slug] ?? 0), 1);
   return (
-    <ol className="scrollbar-none -mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-2 sm:-mx-6 sm:px-6">
-      {ordered.map((l) => {
+    <Reveal><ol className="reveal-stagger scrollbar-none -mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-2 sm:-mx-6 sm:px-6">
+      {ordered.map((l, idx) => {
         const elev = ELEVATION_M[l.slug];
         const n = counts.get(l.slug) ?? 0;
         return (
@@ -32,7 +33,7 @@ export function DestinationTrail({ locations, counts, locale, staysLabel }: {
               </div>
               <div className="mt-3 flex items-end gap-3">
                 <div className="flex h-10 w-1.5 flex-col justify-end overflow-hidden rounded-full bg-sand" aria-hidden>
-                  <div className="w-full rounded-full bg-forest" style={{ height: `${Math.max(6, ((elev ?? 0) / maxElev) * 100)}%` }} />
+                  <div className="elev-bar w-full rounded-full bg-forest" style={{ ["--i" as string]: idx, height: `${Math.max(6, ((elev ?? 0) / maxElev) * 100)}%` }} />
                 </div>
                 <div className="text-sm leading-tight">
                   {elev != null && <p className="num font-medium">{elev.toLocaleString("en")} m</p>}
@@ -43,6 +44,6 @@ export function DestinationTrail({ locations, counts, locale, staysLabel }: {
           </li>
         );
       })}
-    </ol>
+    </ol></Reveal>
   );
 }

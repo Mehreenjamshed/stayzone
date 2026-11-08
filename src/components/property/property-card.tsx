@@ -14,7 +14,7 @@ export function PropertyCard({ p, t, display, rates, locale, saved, signedIn, qu
 }) {
   const href = `/property/${p.slug}${query ? `?${query}` : ""}`;
   return (
-    <article className="group relative">
+    <article className="card-lift group relative">
       <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-card)] bg-sand">
         {p.cover_url ? (
           <Image src={p.cover_url} alt={p.title} fill priority={priority} sizes="(min-width:1280px) 25vw, (min-width:768px) 33vw, 100vw"

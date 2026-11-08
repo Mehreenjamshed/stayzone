@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { brand } from "@/config/brand";
-import { isConfigured, isDemoMode, siteUrl } from "@/config/env";
+import { siteUrl } from "@/config/env";
 import { getDictionary } from "@/lib/i18n/server";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
@@ -26,16 +26,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className="min-h-dvh antialiased">
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:start-3 focus:top-3 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2">Skip to content</a>
-        {!isConfigured() && (
-          <div className="bg-gold/25 px-4 py-2 text-center text-sm">
-            Setup needed: add your Supabase keys to <code>.env.local</code> (see README, step 3). Data and sign-in are disabled until then.
-          </div>
-        )}
-        {isDemoMode() && (
-          <div className="bg-charcoal px-4 py-1.5 text-center text-[13px] text-ivory/90">
-            Preview version. Listings marked “Demo listing” are examples, not real properties, and can’t be booked.
-          </div>
-        )}
         <SiteHeader />
         <main id="main">{children}</main>
         <SiteFooter />

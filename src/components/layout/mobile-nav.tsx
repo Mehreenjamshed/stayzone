@@ -10,13 +10,13 @@ export function MobileNav({ links, signedIn, labels, prefs }: {
   const [open, setOpen] = useState(false);
   return (
     <div className="lg:hidden">
-      <button onClick={() => setOpen(true)} className="grid h-10 w-10 place-items-center rounded-full hover:bg-sand/60" aria-label={labels.menu} aria-expanded={open}>
+      <button onClick={() => setOpen(true)} className="grid h-10 w-10 place-items-center rounded-full hover:bg-sand/60 group-data-[clear]:hover:bg-white/15" aria-label={labels.menu} aria-expanded={open}>
         <Menu className="h-5 w-5" />
       </button>
       {open && (
         <div className="fixed inset-0 z-50 bg-charcoal/40" onClick={() => setOpen(false)}>
           <nav aria-label={labels.menu} onClick={(e) => e.stopPropagation()}
-            className="absolute inset-y-0 end-0 flex w-[min(20rem,85vw)] flex-col gap-1 bg-ivory p-5 shadow-[var(--shadow-lift)]">
+            className="absolute inset-y-0 end-0 flex w-[min(20rem,85vw)] flex-col gap-1 bg-ivory p-5 text-charcoal shadow-[var(--shadow-lift)]">
             <button onClick={() => setOpen(false)} className="mb-3 grid h-10 w-10 place-items-center self-end rounded-full hover:bg-sand/60" aria-label="Close"><X className="h-5 w-5" /></button>
             {links.map((l) => (
               <Link key={l.href} href={l.href} onClick={() => setOpen(false)} className="rounded-xl px-3 py-3 text-lg hover:bg-sand/60">{l.label}</Link>
