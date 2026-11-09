@@ -218,10 +218,14 @@ for (key, host, loc, title, cat, space, area, city, prov, lat, lng, mode, policy
           f"'{uid('review', key, r)}', '{bid}', '{pid}', '{g}', '{host_ids[host]}', {overall}, {', '.join(map(str, sub_scores))}, "
           f"{q(COMMENTS[(r + len(key)) % len(COMMENTS)])}, true, {q(GUESTS[guest_ids.index(g)])}, now() - interval '{days_ago - nights - 1} days') on conflict (id) do nothing;")
 
-# Destination hero images (real photos of these places)
-for slug, ph in [("lahore", "1603491656337-3b491147917c"), ("islamabad", "1608020932658-d0e19a69580b"),
-                 ("hunza", "1514558427911-8e293bebf18c"), ("skardu", "1784223011681-30a45846cd6f"),
-                 ("swat", "1624087267589-41ea77e28b1a"), ("karachi", "1759323050124-eb669cec0b72")]:
+# Destination hero images (real photos of these places, Unsplash licence)
+DEST_PHOTOS = [("lahore", "1603491656337-3b491147917c"), ("islamabad", "1608020932658-d0e19a69580b"),
+    ("rawalpindi", "1608020932658-d0e19a69580b"), ("hunza", "1514558427911-8e293bebf18c"), ("karimabad", "1579196900052-a6034632c042"),
+    ("skardu", "1784223011681-30a45846cd6f"), ("swat", "1624087267589-41ea77e28b1a"), ("karachi", "1759323050124-eb669cec0b72"),
+    ("murree", "1584043204475-8cc101d6c77a"), ("nathiagali", "1601225713917-dc48fd6b4990"), ("naran", "1572707582365-0ee1c8e71173"),
+    ("kaghan", "1605447610363-4f4f04760114"), ("peshawar", "1690015695305-a5e0218125a8"), ("quetta", "1698071500945-90fff1cf9255"),
+    ("chitral", "1584562995253-9de7c2a45982"), ("gilgit", "1654115380392-318a2409c244")]
+for slug, ph in DEST_PHOTOS:
     w(f"update public.locations set hero_image_url = coalesce(hero_image_url, {q(img(ph))}) where slug = {q(slug)};")
 w("commit;")
 

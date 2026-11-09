@@ -369,8 +369,18 @@ insert into public.bookings (id, property_id, listing_id, guest_id, host_id, che
 insert into public.reviews (id, booking_id, property_id, guest_id, host_id, overall, cleanliness, accuracy, location, communication, value, body, is_demo, demo_author_name, created_at) values ('915250c3-24b7-520d-bebb-09c607da580c', '21f7caf4-3287-52d2-9758-97afe0453265', 'fc9d7f43-bcf1-5777-a18d-e8277f5088b0', '9b9a512f-43b2-5e53-b03b-d487525e1c5c', 'd05756eb-5c69-5a48-8285-21e3693e8a77', 5, 5, 5, 4, 4, 4, 'Great location and very safe. Would definitely stay again.', true, 'Bilal T.', now() - interval '169 days') on conflict (id) do nothing;
 update public.locations set hero_image_url = coalesce(hero_image_url, 'https://images.unsplash.com/photo-1603491656337-3b491147917c?auto=format&fit=crop&w=1600&q=80') where slug = 'lahore';
 update public.locations set hero_image_url = coalesce(hero_image_url, 'https://images.unsplash.com/photo-1608020932658-d0e19a69580b?auto=format&fit=crop&w=1600&q=80') where slug = 'islamabad';
+update public.locations set hero_image_url = coalesce(hero_image_url, 'https://images.unsplash.com/photo-1608020932658-d0e19a69580b?auto=format&fit=crop&w=1600&q=80') where slug = 'rawalpindi';
 update public.locations set hero_image_url = coalesce(hero_image_url, 'https://images.unsplash.com/photo-1514558427911-8e293bebf18c?auto=format&fit=crop&w=1600&q=80') where slug = 'hunza';
+update public.locations set hero_image_url = coalesce(hero_image_url, 'https://images.unsplash.com/photo-1579196900052-a6034632c042?auto=format&fit=crop&w=1600&q=80') where slug = 'karimabad';
 update public.locations set hero_image_url = coalesce(hero_image_url, 'https://images.unsplash.com/photo-1784223011681-30a45846cd6f?auto=format&fit=crop&w=1600&q=80') where slug = 'skardu';
 update public.locations set hero_image_url = coalesce(hero_image_url, 'https://images.unsplash.com/photo-1624087267589-41ea77e28b1a?auto=format&fit=crop&w=1600&q=80') where slug = 'swat';
 update public.locations set hero_image_url = coalesce(hero_image_url, 'https://images.unsplash.com/photo-1759323050124-eb669cec0b72?auto=format&fit=crop&w=1600&q=80') where slug = 'karachi';
+update public.locations set hero_image_url = coalesce(hero_image_url, 'https://images.unsplash.com/photo-1584043204475-8cc101d6c77a?auto=format&fit=crop&w=1600&q=80') where slug = 'murree';
+update public.locations set hero_image_url = coalesce(hero_image_url, 'https://images.unsplash.com/photo-1601225713917-dc48fd6b4990?auto=format&fit=crop&w=1600&q=80') where slug = 'nathiagali';
+update public.locations set hero_image_url = coalesce(hero_image_url, 'https://images.unsplash.com/photo-1572707582365-0ee1c8e71173?auto=format&fit=crop&w=1600&q=80') where slug = 'naran';
+update public.locations set hero_image_url = coalesce(hero_image_url, 'https://images.unsplash.com/photo-1605447610363-4f4f04760114?auto=format&fit=crop&w=1600&q=80') where slug = 'kaghan';
+update public.locations set hero_image_url = coalesce(hero_image_url, 'https://images.unsplash.com/photo-1690015695305-a5e0218125a8?auto=format&fit=crop&w=1600&q=80') where slug = 'peshawar';
+update public.locations set hero_image_url = coalesce(hero_image_url, 'https://images.unsplash.com/photo-1698071500945-90fff1cf9255?auto=format&fit=crop&w=1600&q=80') where slug = 'quetta';
+update public.locations set hero_image_url = coalesce(hero_image_url, 'https://images.unsplash.com/photo-1584562995253-9de7c2a45982?auto=format&fit=crop&w=1600&q=80') where slug = 'chitral';
+update public.locations set hero_image_url = coalesce(hero_image_url, 'https://images.unsplash.com/photo-1654115380392-318a2409c244?auto=format&fit=crop&w=1600&q=80') where slug = 'gilgit';
 commit;

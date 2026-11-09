@@ -21,6 +21,7 @@ A full-stack booking marketplace: guests search and book stays, hosts list prope
 | Guest account: profile, trips, trip details, cancel unpaid, saved stays | ✅ Done |
 | English + Urdu (right-to-left), PKR + indicative display currencies | ✅ Done |
 | Demo dataset (20 properties) for presentations, removable in one step | ✅ Done |
+| Online demo with no database needed (real photos, live prices) | ✅ Done |
 | Host listing creation, photo upload, calendar, pricing tools | ⏳ Phase 3 |
 | Payments (Safepay / PayFast / JazzCash / Easypaisa adapters), refunds, payouts | ⏳ Phase 5 |
 | Admin approval tools, user management, audit-log viewer | ⏳ Phase 6 |
@@ -101,6 +102,12 @@ update public.profiles set is_admin = true where email = 'you@example.com';
 Log out and in again, then open http://localhost:3000/admin. Admin rights can only be granted this way — never from the website.
 
 ---
+
+## Quickest way to show it: online demo with no database
+
+See **[DEPLOY-DEMO.md](DEPLOY-DEMO.md)**. One command (`npx vercel --prod`) puts the site online with real photos and the 20 demo listings. When no database is connected, the site automatically runs from the built-in demo catalogue (`src/data/demo-catalog.json`) — read-only, clearly labelled, nothing can be booked. Prices on property pages use the same formula as the database engine (an automated test checks they match).
+
+To refresh that catalogue after editing the demo seed: `./scripts/demo/export-demo-catalog.sh` (needs local PostgreSQL).
 
 ## Demo data (for presentations and mentors)
 

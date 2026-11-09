@@ -4,7 +4,10 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { getSessionUser } from "@/lib/auth/dal";
 import { bookingErrorMessage } from "@/lib/booking-errors";
-import { isIsoDate } from "@/lib/dates";
+import { isIsoDate, todayPK } from "@/lib/dates";
+import { servingDemoData } from "@/lib/data/catalog";
+import { demoListing, demoProperties, demoSettings } from "@/lib/data/demo-store";
+import { quote as tsQuote, QuoteError } from "@/lib/pricing";
 
 const input = z.object({
   propertyId: z.uuid(),
@@ -27,6 +30,23 @@ export type Quote = {
 export async function getQuote(raw: z.input<typeof input>): Promise<{ quote?: Quote; error?: string }> {
   const v = input.safeParse(raw);
   if (!v.success) return { error: "Choose valid dates and guests." };
+  if (servingDemoData()) {
+    // Database-free demo: same formula as the database engine (see lib/pricing.ts).
+    const l = demoListing(v.data.propertyId, v.data.unitGroup);
+    const prop = demoProperties.find((x) => x.id === v.data.propertyId);
+    if (!l || !prop) return { error: bookingErrorMessage("LISTING_NOT_FOUND") };
+    const num = (k: string, d: number) => { const n = Number(demoSettings[k]); return Number.isFinite(n) ? n : d; };
+    try {
+      const q = tsQuote({ ...l, nightly_price_minor: Number(l.nightly_price_minor), weekend_price_minor: l.weekend_price_minor == null ? null : Number(l.weekend_price_minor),
+        cleaning_fee_minor: Number(l.cleaning_fee_minor), extra_guest_fee_minor: Number(l.extra_guest_fee_minor), security_deposit_minor: Number(l.security_deposit_minor) },
+        v.data.checkin, v.data.checkout, v.data.adults, v.data.children,
+        { guestBps: num("fees.guest_service_bps", 400), commissionBps: num("fees.host_commission_bps", 800), taxBps: num("fees.tax_bps", 0) },
+        { today: todayPK(), childrenAllowed: prop.children_allowed });
+      return { quote: { ...q, currency: prop.currency, booking_mode: prop.booking_mode } };
+    } catch (e) {
+      return { error: bookingErrorMessage(e instanceof QuoteError ? e.message : undefined) };
+    }
+  }
   const supabase = await createClient();
   const { data: listing } = await supabase.from("listings").select("id")
     .eq("property_id", v.data.propertyId).eq("unit_group", v.data.unitGroup).eq("is_active", true).is("deleted_at", null)
@@ -52,6 +72,7 @@ export async function getQuote(raw: z.input<typeof input>): Promise<{ quote?: Qu
 export async function reserve(_: { error?: string }, formData: FormData): Promise<{ error?: string }> {
   const v = input.safeParse(Object.fromEntries(formData));
   if (!v.success) return { error: "Choose valid dates and guests." };
+  if (servingDemoData()) return { error: bookingErrorMessage("DEMO_LISTING") };
   const user = await getSessionUser();
   if (!user) redirect(`/login?next=${encodeURIComponent(String(formData.get("returnTo") ?? "/"))}`);
   const supabase = await createClient();

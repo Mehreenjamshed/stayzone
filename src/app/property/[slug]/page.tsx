@@ -96,7 +96,7 @@ export default async function PropertyPage({ params, searchParams }: Props) {
       <div className="mt-10 grid gap-12 lg:grid-cols-[1fr_24rem]">
         <div className="min-w-0">
           <div className="border-b border-line pb-8">
-            <h2 className="text-xl font-semibold">{t.categories[p.category]}{host ? ` ${t.property.hostedBy.toLowerCase()} ${host.display_name}` : ""}</h2>
+            <h2 className="text-xl font-semibold">{t.categoryOne[p.category]}{host ? ` ${t.property.hostedBy.toLowerCase()} ${host.display_name}` : ""}</h2>
             {first && <p className="num mt-1 text-muted">{[t.property.guests(Math.max(...p.listings.map((l) => l.max_guests))), t.property.bedrooms(first.bedrooms), t.property.beds(first.beds), t.property.baths(Number(first.bathrooms))].join(" · ")}</p>}
             <div className="mt-3 flex flex-wrap gap-4">
               {host?.is_verified && <VerifiedBadge label={t.property.verifiedHost} className="text-sm" />}

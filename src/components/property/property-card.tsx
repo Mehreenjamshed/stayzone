@@ -34,7 +34,7 @@ export function PropertyCard({ p, t, display, rates, locale, saved, signedIn, qu
             <span className="num flex shrink-0 items-center gap-1 text-sm"><Star className="h-3.5 w-3.5 fill-charcoal" aria-hidden />{Number(p.rating_avg).toFixed(2)} <span className="text-muted">({p.rating_count})</span></span>
           ) : <span className="shrink-0 text-sm text-muted">{t.property.new}</span>}
         </div>
-        <p className="text-sm text-muted">{[p.area, p.city].filter(Boolean).join(", ")} · {t.categories[p.category]}</p>
+        <p className="text-sm text-muted">{[p.area, p.city].filter(Boolean).join(", ")} · {t.categoryOne[p.category]}</p>
         <p className="text-sm text-muted">{t.property.guests(p.max_guests)}{p.host_verified && <> · <VerifiedBadge label={t.property.verifiedHost} className="relative z-10 align-middle" /></>}</p>
         <p className="pt-1 text-[15px]">
           <span className="text-sm text-muted">{t.property.from} </span>

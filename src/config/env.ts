@@ -22,5 +22,13 @@ export function getPublicEnv(): PublicEnv | null {
 }
 
 export const isConfigured = () => getPublicEnv() !== null;
-export const isDemoMode = () => process.env.NEXT_PUBLIC_DEMO_MODE === "true";
+/**
+ * Demo listings are shown when NEXT_PUBLIC_DEMO_MODE=true, or automatically when no
+ * database is connected yet (unless explicitly set to "false"). For the real launch,
+ * connect Supabase and set NEXT_PUBLIC_DEMO_MODE=false.
+ */
+export const isDemoMode = () => {
+  const flag = process.env.NEXT_PUBLIC_DEMO_MODE;
+  return flag === "true" || (flag !== "false" && !isConfigured());
+};
 export const siteUrl = () => (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/$/, "");

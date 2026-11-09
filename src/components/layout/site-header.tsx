@@ -19,14 +19,14 @@ export async function SiteHeader() {
   ];
   return (
     <HeaderShell banner={<>
-      {!isConfigured() && (
+      {!isConfigured() && !isDemoMode() && (
         <div className="bg-sand px-4 py-2 text-center text-sm text-charcoal">
           Setup needed: add your Supabase keys to <code>.env.local</code> (see README, step 3). Data and sign-in are disabled until then.
         </div>
       )}
       {isDemoMode() && (
         <div className="bg-charcoal/90 px-4 py-1.5 text-center text-[13px] text-ivory/90">
-          Preview version. Listings marked “Demo listing” are examples, not real properties, and can’t be booked.
+          Preview version. Listings marked “Demo listing” are examples with illustrative photos, not real properties, and can’t be booked.
         </div>
       )}
     </>}>

@@ -5,10 +5,15 @@ import { isConfigured, isDemoMode } from "@/config/env";
 import { PAGE_SIZE, type SearchParams } from "@/lib/search-params";
 import type { DisplayCurrency } from "@/lib/money";
 import type { Location, PropertyDetail, Review, SearchResult } from "@/types/db";
+import { demoDestinationCounts, demoHost, demoLocations, demoProperties, demoPropertyBySlug, demoSearch, demoSettings } from "./demo-store";
+
+/** No database yet, but demo mode is on: serve the built-in demo catalogue. */
+export const servingDemoData = () => !isConfigured() && isDemoMode();
 
 export class DataError extends Error {}
 
 export const getLocations = cache(async (): Promise<Location[]> => {
+  if (servingDemoData()) return demoLocations;
   if (!isConfigured()) return [];
   const supabase = await createClient();
   const { data, error } = await supabase.from("locations").select("*").order("sort_order");
@@ -17,6 +22,7 @@ export const getLocations = cache(async (): Promise<Location[]> => {
 });
 
 export const getFxRates = cache(async (): Promise<Partial<Record<DisplayCurrency, number>>> => {
+  if (servingDemoData()) return (demoSettings["public.fx_rates"] ?? {}) as Partial<Record<DisplayCurrency, number>>;
   if (!isConfigured()) return {};
   const supabase = await createClient();
   const { data } = await supabase.from("platform_settings").select("value").eq("key", "public.fx_rates").maybeSingle();
@@ -24,6 +30,7 @@ export const getFxRates = cache(async (): Promise<Partial<Record<DisplayCurrency
 });
 
 export async function searchProperties(p: SearchParams, opts: { limit?: number } = {}) {
+  if (servingDemoData()) return demoSearch(p, opts.limit);
   if (!isConfigured()) return { results: [] as SearchResult[], total: 0 };
   const supabase = await createClient();
   const limit = opts.limit ?? PAGE_SIZE;
@@ -56,6 +63,12 @@ export async function searchProperties(p: SearchParams, opts: { limit?: number }
 }
 
 export const getPropertyBySlug = cache(async (slug: string): Promise<PropertyDetail | null> => {
+  if (servingDemoData()) {
+    const d = demoPropertyBySlug(slug);
+    if (!d) return null;
+    return { ...d, property_photos: [...d.property_photos].sort((a, b) => Number(b.is_cover) - Number(a.is_cover) || a.sort_order - b.sort_order),
+      listings: d.listings.filter((l) => l.is_active).sort((a, b) => a.sort_order - b.sort_order) };
+  }
   if (!isConfigured()) return null;
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -83,6 +96,10 @@ export const getPropertyBySlug = cache(async (slug: string): Promise<PropertyDet
 });
 
 export async function getPropertyReviews(propertyId: string, limit = 6) {
+  if (servingDemoData()) {
+    return (demoProperties.find((p) => p.id === propertyId)?.reviews ?? []).slice(0, limit);
+  }
+  if (!isConfigured()) return [];
   const supabase = await createClient();
   const { data } = await supabase
     .from("reviews")
@@ -93,13 +110,15 @@ export async function getPropertyReviews(propertyId: string, limit = 6) {
 }
 
 export async function getHostCard(hostId: string) {
+  if (servingDemoData()) return demoHost(hostId);
+  if (!isConfigured()) return null;
   const supabase = await createClient();
   const { data } = await supabase.from("public_host_cards").select("*").eq("id", hostId).maybeSingle();
   return data as { id: string; display_name: string; about: string | null; languages: string[]; response_time_hours: number | null; is_verified: boolean; hosting_since: string; avatar_url: string | null } | null;
 }
 
 export async function getFavoriteIds(userId: string | undefined) {
-  if (!userId) return new Set<string>();
+  if (!userId || !isConfigured()) return new Set<string>();
   const supabase = await createClient();
   const { data } = await supabase.from("favorites").select("property_id").eq("user_id", userId);
   return new Set((data ?? []).map((r) => r.property_id as string));
@@ -107,6 +126,7 @@ export async function getFavoriteIds(userId: string | undefined) {
 
 /** Count of approved, bookable stays per destination (database-backed). */
 export async function getDestinationCounts() {
+  if (servingDemoData()) return demoDestinationCounts();
   if (!isConfigured()) return new Map<string, number>();
   const supabase = await createClient();
   let q = supabase.from("properties").select("location:locations(slug)").eq("status", "APPROVED").is("deleted_at", null);
@@ -120,6 +140,7 @@ export async function getDestinationCounts() {
 }
 
 export async function getIntSetting(key: string, fallback: number) {
+  if (servingDemoData()) { const n = Number(demoSettings[key]); return Number.isFinite(n) ? n : fallback; }
   if (!isConfigured()) return fallback;
   const supabase = await createClient();
   const { data } = await supabase.from("platform_settings").select("value").eq("key", key).maybeSingle();
