@@ -1610,3 +1610,55 @@ grant select, update on public.waitlist_signups to authenticated;
 insert into public.platform_settings (key, value, description) values
   ('public.launch_phase', '"WAITLIST"', 'WAITLIST = soft launch (sign-ups only); LIVE = bookings open')
 on conflict (key) do nothing;
+
+
+-- ===== 20261109000009_harden_grants.sql =====
+-- =====================================================================
+-- StayZone — 0009 Tighten privileges for Supabase defaults
+-- Supabase grants ALL on new public tables to anon/authenticated by default.
+-- RLS already protects every table; this removes the excess privileges too
+-- (defence in depth), so logged-out visitors can only read public catalogue
+-- data and submit the launch-list forms.
+-- =====================================================================
+revoke all on all tables in schema public from anon;
+revoke all on all sequences in schema public from anon;
+grant select on public.locations, public.amenities, public.subscription_plans, public.platform_settings,
+  public.properties, public.listings, public.property_photos, public.listing_amenities, public.reviews,
+  public.host_profiles, public.compliance_requirements, public.public_host_cards to anon;
+grant insert on public.waitlist_signups to anon;
+
+revoke truncate, references, trigger on all tables in schema public from anon, authenticated;
+revoke insert, update, delete on public.payments, public.refunds, public.payouts, public.ledger_entries,
+  public.webhook_events, public.audit_logs, public.bookings, public.host_subscriptions from authenticated;
+revoke delete on public.waitlist_signups from authenticated;
+
+alter default privileges in schema public revoke all on tables from anon;
+alter default privileges in schema public revoke all on sequences from anon;
+
+
+-- ===== 20261109000010_advisor_fixes.sql =====
+-- Security advisor follow-ups.
+-- 1) Pin search_path on the remaining functions.
+alter function public.set_updated_at() set search_path = public;
+alter function public.pk_today() set search_path = public;
+alter function public.booking_holds_inventory(public.booking_status) set search_path = public;
+alter function public.protect_notification() set search_path = public;
+
+-- 2) Trigger functions are never called through the API.
+revoke execute on function public.handle_new_user() from public, anon, authenticated;
+revoke execute on function public.refresh_property_rating() from public, anon, authenticated;
+
+-- 3) Helpers only used by signed-in policies: not callable anonymously.
+--    (is_admin, property_is_public and owns_property stay executable by anon
+--    because public read policies evaluate them for visitors.)
+revoke execute on function public.is_active_user(uuid) from public, anon;
+revoke execute on function public.in_conversation(uuid) from public, anon;
+revoke execute on function public.owns_listing(uuid) from public, anon;
+revoke execute on function public.setting_int(text, int) from public, anon;
+grant execute on function public.is_active_user(uuid) to authenticated;
+grant execute on function public.in_conversation(uuid) to authenticated;
+grant execute on function public.owns_listing(uuid) to authenticated;
+grant execute on function public.setting_int(text, int) to authenticated;
+
+-- 4) New functions are not executable by anon unless granted explicitly.
+alter default privileges in schema public revoke execute on functions from public, anon;
