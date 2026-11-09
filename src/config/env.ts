@@ -31,7 +31,12 @@ export const isDemoMode = () => {
   const flag = process.env.NEXT_PUBLIC_DEMO_MODE;
   return flag === "true" || (flag !== "false" && !isConfigured());
 };
-export const siteUrl = () => (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/$/, "");
+/** Public site address. On Vercel it falls back to the project's production domain automatically. */
+export const siteUrl = () => {
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL;
+  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL;
+  return (explicit || (vercel ? `https://${vercel}` : "http://localhost:3000")).replace(/\/$/, "");
+};
 
 /**
  * Launch phase. "waitlist" (default) = soft launch: browsing + sign-up forms, no bookings.
