@@ -10,8 +10,8 @@ type Group = { key: string; name: string; maxGuests: number; fromMinor: number; 
 
 function addDay(iso: string) { const d = new Date(iso + "T00:00:00Z"); d.setUTCDate(d.getUTCDate() + 1); return d.toISOString().slice(0, 10); }
 
-export function BookingWidget({ propertyId, groups, currency, today, mode, isDemo, initial, labels }: {
-  propertyId: string; groups: Group[]; currency: string; today: string; mode: "INSTANT" | "REQUEST"; isDemo: boolean;
+export function BookingWidget({ propertyId, groups, currency, today, mode, isDemo, waitlist, initial, labels }: {
+  propertyId: string; groups: Group[]; currency: string; today: string; mode: "INSTANT" | "REQUEST"; isDemo: boolean; waitlist?: boolean;
   initial: { checkin?: string; checkout?: string; adults?: number; children?: number; infants?: number };
   labels: { perNight: string; checkIn: string; checkOut: string; adults: string; children: string; infants: string; instant: string; request: string; demo: string };
 }) {
@@ -79,7 +79,9 @@ export function BookingWidget({ propertyId, groups, currency, today, mode, isDem
         {shown.error && <Alert tone="error">{shown.error}</Alert>}
         {state.error && <Alert tone="error">{state.error}</Alert>}
 
-        {isDemo ? (
+        {waitlist ? (
+          <a href="/waitlist" className="flex h-13 w-full items-center justify-center rounded-[14px] bg-forest px-7 font-medium text-white hover:bg-forest-deep">Bookings open soon: join the launch list</a>
+        ) : isDemo ? (
           <Button type="button" disabled className="w-full">{labels.demo}: can’t be booked</Button>
         ) : (
           <Button type="submit" className="w-full" size="lg" disabled={!q || checking || submitting}>
@@ -87,7 +89,7 @@ export function BookingWidget({ propertyId, groups, currency, today, mode, isDem
           </Button>
         )}
         <p className="text-center text-xs text-muted">
-          {mode === "INSTANT" ? "Your dates are held while you complete payment." : "The host has 24 hours to respond. You won't be charged unless they accept."}
+          {waitlist ? "This is how prices will be shown when bookings open." : mode === "INSTANT" ? "Your dates are held while you complete payment." : "The host has 24 hours to respond. You won't be charged unless they accept."}
         </p>
       </form>
 

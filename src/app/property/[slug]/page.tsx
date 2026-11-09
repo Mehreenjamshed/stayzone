@@ -14,6 +14,7 @@ import { FavoriteButton } from "@/components/property/favorite-button";
 import { BookingWidget } from "@/components/property/booking-widget";
 import { LocationMap } from "@/components/property/location-map";
 import { Alert } from "@/components/ui/field";
+import { isWaitlistPhase } from "@/config/env";
 
 type Props = { params: Promise<{ slug: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> };
 
@@ -189,7 +190,7 @@ export default async function PropertyPage({ params, searchParams }: Props) {
         </div>
 
         <aside className="lg:sticky lg:top-24 lg:self-start">
-          <BookingWidget propertyId={p.id} groups={groups} currency={p.currency} today={todayPK()} mode={p.booking_mode} isDemo={p.is_demo}
+          <BookingWidget propertyId={p.id} groups={groups} currency={p.currency} today={todayPK()} mode={p.booking_mode} isDemo={p.is_demo} waitlist={isWaitlistPhase()}
             initial={{ checkin: sp.checkin, checkout: sp.checkout, adults: sp.adults, children: sp.children, infants: sp.infants }}
             labels={{ perNight: t.property.perNight, checkIn: t.search.checkIn, checkOut: t.search.checkOut, adults: t.search.adults, children: t.search.children, infants: t.search.infants, instant: t.property.instant, request: t.property.request, demo: t.property.demo }} />
         </aside>

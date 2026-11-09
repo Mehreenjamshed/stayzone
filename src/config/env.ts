@@ -32,3 +32,10 @@ export const isDemoMode = () => {
   return flag === "true" || (flag !== "false" && !isConfigured());
 };
 export const siteUrl = () => (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/$/, "");
+
+/**
+ * Launch phase. "waitlist" (default) = soft launch: browsing + sign-up forms, no bookings.
+ * "live" = bookings open (after host tools, admin approval and payments are ready).
+ */
+export const launchPhase = (): "waitlist" | "live" => (process.env.NEXT_PUBLIC_LAUNCH_PHASE === "live" ? "live" : "waitlist");
+export const isWaitlistPhase = () => launchPhase() === "waitlist";

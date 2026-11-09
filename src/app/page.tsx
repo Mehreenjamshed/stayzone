@@ -9,6 +9,8 @@ import { getDestinationCounts, getFavoriteIds, getFxRates, getIntSetting, getLoc
 import { HeroSlideshow, type Slide } from "@/components/home/hero-slideshow";
 import { EarningsCalculator } from "@/components/home/earnings-calculator";
 import { Reveal } from "@/components/motion/reveal";
+import { GuestWaitlistForm } from "@/components/waitlist/forms";
+import { isWaitlistPhase } from "@/config/env";
 import { getSessionUser } from "@/lib/auth/dal";
 import { parseSearchParams, categorySlug } from "@/lib/search-params";
 import { todayPK } from "@/lib/dates";
@@ -105,6 +107,19 @@ export default async function HomePage() {
         )}
       </Reveal>
 
+      {/* Launch list (soft launch) */}
+      {isWaitlistPhase() && (
+        <Reveal as="section" className="mx-auto max-w-7xl px-4 pt-24 sm:px-6">
+          <div className="reveal grid gap-8 rounded-[2rem] border border-line bg-white p-8 sm:p-12 lg:grid-cols-[1fr_1.4fr] lg:items-center">
+            <div>
+              <h2 className="text-2xl font-semibold sm:text-3xl">Be first to book when we open</h2>
+              <p className="mt-3 text-muted">We’re onboarding verified hosts across Pakistan. Join the list for early access.</p>
+            </div>
+            <GuestWaitlistForm source="home" />
+          </div>
+        </Reveal>
+      )}
+
       {/* Trust */}
       <Reveal as="section" className="mx-auto max-w-7xl px-4 pt-24 sm:px-6">
         <h2 className="reveal text-2xl font-semibold sm:text-3xl">{t.home.trustTitle}</h2>
@@ -127,7 +142,7 @@ export default async function HomePage() {
             <div>
               <h2 className="text-3xl font-semibold sm:text-[2.6rem] sm:leading-tight">{t.home.hostTitle}</h2>
               <p className="mt-4 max-w-md text-lg text-ivory/80">{t.home.hostSub.replace("{brand}", brand.name)}</p>
-              <ButtonLink href="/become-a-host" size="lg" className="mt-8 bg-gold text-charcoal hover:bg-[#d4b57e]">{t.home.hostCta}</ButtonLink>
+              <ButtonLink href={isWaitlistPhase() ? "/become-a-host#list" : "/become-a-host"} size="lg" className="mt-8 bg-gold text-charcoal hover:bg-[#d4b57e]">{isWaitlistPhase() ? "Register your property" : t.home.hostCta}</ButtonLink>
             </div>
             <div className="text-charcoal"><EarningsCalculator commissionBps={commissionBps} /></div>
           </div>

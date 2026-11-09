@@ -3,8 +3,8 @@ import Link from "next/link";
 import { useState, type ReactNode } from "react";
 import { Menu, X } from "lucide-react";
 
-export function MobileNav({ links, signedIn, labels, prefs }: {
-  links: { href: string; label: string }[]; signedIn: boolean; prefs: ReactNode;
+export function MobileNav({ links, signedIn, waitlist, labels, prefs }: {
+  links: { href: string; label: string }[]; signedIn: boolean; waitlist?: boolean; prefs: ReactNode;
   labels: { menu: string; login: string; signup: string };
 }) {
   const [open, setOpen] = useState(false);
@@ -21,7 +21,13 @@ export function MobileNav({ links, signedIn, labels, prefs }: {
             {links.map((l) => (
               <Link key={l.href} href={l.href} onClick={() => setOpen(false)} className="rounded-xl px-3 py-3 text-lg hover:bg-sand/60">{l.label}</Link>
             ))}
-            {!signedIn && (
+            {!signedIn && waitlist && (
+              <div className="mt-4 grid gap-2">
+                <Link href="/waitlist" onClick={() => setOpen(false)} className="rounded-xl border border-line bg-white px-4 py-3 text-center">Join the launch list</Link>
+                <Link href="/become-a-host#list" onClick={() => setOpen(false)} className="rounded-xl bg-forest px-4 py-3 text-center text-white">List your property</Link>
+              </div>
+            )}
+            {!signedIn && !waitlist && (
               <div className="mt-4 grid gap-2">
                 <Link href="/login" onClick={() => setOpen(false)} className="rounded-xl border border-line bg-white px-4 py-3 text-center">{labels.login}</Link>
                 <Link href="/register" onClick={() => setOpen(false)} className="rounded-xl bg-forest px-4 py-3 text-center text-white">{labels.signup}</Link>

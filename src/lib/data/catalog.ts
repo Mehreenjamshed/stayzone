@@ -1,14 +1,17 @@
 import "server-only";
 import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
-import { isConfigured, isDemoMode } from "@/config/env";
+import { isConfigured, isDemoMode, isWaitlistPhase } from "@/config/env";
 import { PAGE_SIZE, type SearchParams } from "@/lib/search-params";
 import type { DisplayCurrency } from "@/lib/money";
 import type { Location, PropertyDetail, Review, SearchResult } from "@/types/db";
 import { demoDestinationCounts, demoHost, demoLocations, demoProperties, demoPropertyBySlug, demoSearch, demoSettings } from "./demo-store";
 
-/** No database yet, but demo mode is on: serve the built-in demo catalogue. */
-export const servingDemoData = () => !isConfigured() && isDemoMode();
+/**
+ * Serve the built-in demo catalogue when demo mode is on and either no database is
+ * connected yet, or we're in the soft-launch (waitlist) phase with no real listings.
+ */
+export const servingDemoData = () => isDemoMode() && (!isConfigured() || isWaitlistPhase());
 
 export class DataError extends Error {}
 

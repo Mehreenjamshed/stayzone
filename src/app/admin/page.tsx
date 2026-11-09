@@ -34,7 +34,10 @@ export default async function AdminPage() {
   ];
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <h1 className="text-3xl font-semibold">Admin overview</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-3xl font-semibold">Admin overview</h1>
+        <a href="/admin/waitlist" className="rounded-xl bg-forest px-4 py-2.5 text-sm font-medium text-white hover:bg-forest-deep">Launch list sign-ups</a>
+      </div>
       <p className="mt-1 text-sm text-muted">Figures include demo bookings while the demo dataset is loaded.</p>
       <dl className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-3">
         {stats.map(([k, v]) => <div key={k} className="rounded-2xl border border-line bg-white p-4"><dt className="text-sm text-muted">{k}</dt><dd className="num mt-1 text-2xl font-semibold">{v}</dd></div>)}

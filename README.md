@@ -22,6 +22,7 @@ A full-stack booking marketplace: guests search and book stays, hosts list prope
 | English + Urdu (right-to-left), PKR + indicative display currencies | ✅ Done |
 | Demo dataset (20 properties) for presentations, removable in one step | ✅ Done |
 | Online demo with no database needed (real photos, live prices) | ✅ Done |
+| Soft launch: host & traveller waitlist forms, admin list + CSV export, sitemap | ✅ Done & tested |
 | Host listing creation, photo upload, calendar, pricing tools | ⏳ Phase 3 |
 | Payments (Safepay / PayFast / JazzCash / Easypaisa adapters), refunds, payouts | ⏳ Phase 5 |
 | Admin approval tools, user management, audit-log viewer | ⏳ Phase 6 |
@@ -102,6 +103,10 @@ update public.profiles set is_admin = true where email = 'you@example.com';
 Log out and in again, then open http://localhost:3000/admin. Admin rights can only be granted this way — never from the website.
 
 ---
+
+## Launching
+
+**Soft launch (sign-ups before bookings open): see [LAUNCH.md](LAUNCH.md).**
 
 ## Quickest way to show it: online demo with no database
 
